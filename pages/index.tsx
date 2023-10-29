@@ -1,17 +1,16 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import styles from '../styles/Home.module.css';
+import Head from "next/head";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import styles from "../styles/Home.module.css";
 
-
-export default function Home({ data}: { data: { time: string} }) {
+export default function Home({ data }: { data: { time: string } }) {
   const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
-    fetch('/api/time')
-    .then(res => res.json())
-    .then(json => setTime(new Date(json.time)))
-  }, [])
+    fetch("/api/time")
+      .then((res) => res.json())
+      .then((json) => setTime(new Date(json.time)));
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -22,13 +21,11 @@ export default function Home({ data}: { data: { time: string} }) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">
-                    Next.js!{" "}
-                    {time &&
-                    `The time is ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`}
-                </a>
-        </h1>
+        <h1 className={styles.title}>Welcome to BidBot</h1>
+        <p>
+          {time &&
+            `The time is ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`}
+        </p>
       </main>
 
       <footer className={styles.footer}>
@@ -37,14 +34,14 @@ export default function Home({ data}: { data: { time: string} }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps() {
