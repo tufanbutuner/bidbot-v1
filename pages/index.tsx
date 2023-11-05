@@ -1,16 +1,49 @@
 "use client";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 
+interface DocumentProps {
+  Question: string;
+  Title: string;
+  bodycontentid?: string;
+  lastmoddate?: string;
+  text: string;
+}
+
 export default function Home() {
-  const [message, setMessage] = useState<string>("");
-  const [history, setHistory] = useState([
-    {
-      role: "assistant",
-      content: "Welcome, ask me any questions about Transform",
-    },
-  ]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const [answer, setAnswer] = useState("");
+  const [documents, setDocuments] = useState<DocumentProps[]>([]);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    // const input1 = e.target["input-1"].value;
+    const input2 = e.target["input-2"].value;
+    const input3 = e.target["input-3"].value;
+
+    try {
+      const response = await fetch("http://localhost:3000/api/embeddings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input2,
+          input3,
+        }),
+      });
+
+      const data = await response.json();
+      setAnswer(data.text);
+      setDocuments(data.matches);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  console.log(documents);
 
   return (
     <>
@@ -27,40 +60,64 @@ export default function Home() {
           rel="stylesheet"
         />
       </Head>
+
       <main className="container">
-        <div className="main-container">
-          <div className="input-container">
-            <div className="input-block">
-              <div className="input-block">
-                <strong>Prompt context</strong>
-                <input name="myInput" />
-              </div>
-
-              <div className="input-block">
-                <strong>
-                  Choose the amount of documents (between 2-15) for context
-                </strong>
-                <input type="text" name="input-2" />
-              </div>
-
-              <div className="input-block">
-                <strong>Ask a question</strong>
-                <textarea name="input-3" />
-              </div>
-            </div>
-
-            <button>Shiny Do Stuff Button</button>
+        {!session ? (
+          <div className="sign-in-message-container">
+            <h1 className="sign-in-message">Please sign in to use BidBot.</h1>
           </div>
+        ) : (
+          <div className="main-container">
+            <div className="output-container">
+              <div className="chat-container">
+                <strong>Answer</strong>
+                <p>{answer}</p>
+              </div>
+              <div className="chat-container">
+                <strong>Documents used</strong>
+                {documents.map((doc, index) => (
+                  <div key={index}>
+                    <h5>{doc.Question}</h5>
+                    <p>{doc.Title}</p>
+                    <p>{doc.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          <div className="output-container">
-            <div className="chat-container">
-              <strong>Documents used</strong>
-            </div>
-            <div className="chat-container">
-              <strong>Answer</strong>
-            </div>
+            <form className="input-container" onSubmit={handleSubmit}>
+              <div className="input-block">
+                <div className="input-block">
+                  <input
+                    type="text"
+                    name="input-1"
+                    placeholder="Prompt context"
+                  />
+                </div>
+
+                <div className="input-block">
+                  <input
+                    type="number"
+                    name="input-2"
+                    placeholder="Amount of documents (between 2-15) for context"
+                    min={2}
+                    max={15}
+                    required
+                  />
+                </div>
+
+                <div className="input-block">
+                  <textarea
+                    name="input-3"
+                    placeholder="Send a message"
+                    required
+                  />
+                </div>
+                <button type="submit">Shiny Do Stuff Button</button>
+              </div>
+            </form>
           </div>
-        </div>
+        )}
       </main>
     </>
   );
