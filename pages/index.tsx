@@ -1,50 +1,67 @@
+"use client";
 import Head from "next/head";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
+import { useState } from "react";
 
-export default function Home({ data }: { data: { time: string } }) {
-  const [time, setTime] = useState<Date | null>(null);
-
-  useEffect(() => {
-    fetch("/api/time")
-      .then((res) => res.json())
-      .then((json) => setTime(new Date(json.time)));
-  }, []);
+export default function Home() {
+  const [message, setMessage] = useState<string>("");
+  const [history, setHistory] = useState([
+    {
+      role: "assistant",
+      content: "Welcome, ask me any questions about Transform",
+    },
+  ]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <title>BidBot</title>
-        <meta name="description" content="BidBot created by Transform" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
+      <main className="container">
+        <div className="main-container">
+          <div className="input-container">
+            <div className="input-block">
+              <div className="input-block">
+                <strong>Prompt context</strong>
+                <input name="myInput" />
+              </div>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to BidBot</h1>
-        <p>
-          {time &&
-            `The time is ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`}
-        </p>
+              <div className="input-block">
+                <strong>
+                  Choose the amount of documents (between 2-15) for context
+                </strong>
+                <input type="text" name="input-2" />
+              </div>
+
+              <div className="input-block">
+                <strong>Ask a question</strong>
+                <textarea name="input-3" />
+              </div>
+            </div>
+
+            <button>Shiny Do Stuff Button</button>
+          </div>
+
+          <div className="output-container">
+            <div className="chat-container">
+              <strong>Documents used</strong>
+            </div>
+            <div className="chat-container">
+              <strong>Answer</strong>
+            </div>
+          </div>
+        </div>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+    </>
   );
-}
-
-export async function getServerSideProps() {
-  const data = JSON.stringify({ time: new Date().toString() });
-  return { props: { data } };
 }
