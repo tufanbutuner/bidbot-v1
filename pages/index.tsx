@@ -68,29 +68,11 @@ export default function Home() {
           </div>
         ) : (
           <div className="main-container">
-            <form className="input-container" onSubmit={handleSubmit}>
-              <div className="input-block">
-                <div className="input-block">
-                  <strong>Prompt context</strong>
-                  <input type="text" name="input-1" />
-                </div>
-
-                <div className="input-block">
-                  <strong>
-                    Choose the amount of documents (between 2-15) for context
-                  </strong>
-                  <input type="number" name="input-2" required />
-                </div>
-
-                <div className="input-block">
-                  <strong>Ask a question</strong>
-                  <textarea name="input-3" required />
-                </div>
-                <button type="submit">Shiny Do Stuff Button</button>
-              </div>
-            </form>
-
             <div className="output-container">
+              <div className="chat-container">
+                <strong>Answer</strong>
+                <p>{answer}</p>
+              </div>
               <div className="chat-container">
                 <strong>Documents used</strong>
                 {documents.map((doc, index) => (
@@ -101,11 +83,39 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <div className="chat-container">
-                <strong>Answer</strong>
-                <p>{answer}</p>
-              </div>
             </div>
+
+            <form className="input-container" onSubmit={handleSubmit}>
+              <div className="input-block">
+                <div className="input-block">
+                  <input
+                    type="text"
+                    name="input-1"
+                    placeholder="Prompt context"
+                  />
+                </div>
+
+                <div className="input-block">
+                  <input
+                    type="number"
+                    name="input-2"
+                    placeholder="Amount of documents (between 2-15) for context"
+                    min={2}
+                    max={15}
+                    required
+                  />
+                </div>
+
+                <div className="input-block">
+                  <textarea
+                    name="input-3"
+                    placeholder="Send a message"
+                    required
+                  />
+                </div>
+                <button type="submit">Shiny Do Stuff Button</button>
+              </div>
+            </form>
           </div>
         )}
       </main>

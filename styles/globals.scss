@@ -22,17 +22,23 @@ a {
   box-sizing: border-box;
 }
 
+.page-container {
+  display: flex;
+  height: 100vh;
+}
+
 .container {
-  padding: 2rem;
   width: 100%;
   max-width: 100%;
 }
 
 .main-container {
-  display: grid;
-  grid-template-columns: 2fr 4fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   gap: 1rem;
-  height: 75vh;
+  height: 100vh;
+  padding: 2rem;
 
   h1 {
     font-size: 2rem;
@@ -60,12 +66,15 @@ a {
   textarea {
     border: 1px solid rgb(237, 237, 237);
     border-radius: 4px;
+    padding: 1rem;
   }
 
   textarea {
     max-height: 200px;
     height: 80px;
     overflow-y: hidden;
+    max-width: 100%;
+    resize: vertical;
   }
 }
 
@@ -91,23 +100,15 @@ a {
   border-radius: 4px;
 }
 
-.footer-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ec671b;
-  color: white;
-  height: 10rem;
-  margin-top: 2rem;
-}
-
 .navbar-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   background-color: #ec671b;
   color: white;
-  padding: 1rem 2rem;
+  width: 24vw;
+  padding: 1rem 0rem;
 
   ul {
     list-style-type: none;
