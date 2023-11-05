@@ -117,6 +117,8 @@ a {
   li {
     display: inline;
     margin-right: 10px;
+    font-weight: bold;
+    cursor: pointer;
   }
 
   a {
@@ -127,6 +129,18 @@ a {
 
 .output-container {
   display: grid;
-  grid-template-rows: 4fr 2fr;
+  grid-template-rows: 2fr 2fr;
   gap: 1rem;
+  overflow: auto;
+}
+
+.sign-in-message-container {
+  display: flex;
+  justify-content: center;
+  height: 75vh;
+}
+
+.sign-in-message {
+  display: flex;
+  justify-content: center;
 }
