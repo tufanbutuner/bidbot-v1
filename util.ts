@@ -48,7 +48,7 @@ Question: {QUERY}
 
 Answer: `;
 
-export const getPrompt = (context, query) => {
+export const getPrompt = (context: string, query: any) => {
   return template.replace("{CONTEXT}", context).replace("{QUERY}", query);
 };
 
