@@ -145,3 +145,23 @@ a {
   display: flex;
   justify-content: center;
 }
+
+.answer-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 4px;
+}
+
+.document-answer-container {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border-radius: 4px;
+  gap: 1rem;
+
+  h5,
+  p {
+    margin: 0;
+  }
+}

@@ -71,15 +71,11 @@ export default function Home() {
         ) : (
           <div className="main-container">
             <div className="output-container">
-              {loading && (
-                <div className="loading-indicator">
-                  <p>Loading...</p>
-                </div>
-              )}
-
               <div className="chat-container">
                 <strong>Answer</strong>
-                <p>{loading ? "Thinking..." : answer}</p>
+                <p className="answer-container">
+                  {loading ? "Thinking..." : answer}
+                </p>
               </div>
               <div className="chat-container">
                 <strong>Documents used</strong>
@@ -89,7 +85,7 @@ export default function Home() {
                   </div>
                 ) : (
                   documents.map((doc, index) => (
-                    <div key={index}>
+                    <div key={index} className="document-answer-container">
                       <h5>{doc.Question}</h5>
                       <p>{doc.Title}</p>
                       <p>{doc.text}</p>
