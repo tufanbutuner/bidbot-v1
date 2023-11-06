@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import Auth0Provider from "next-auth/providers/auth0";
 
+const secret = process.env.NEXTAUTH_SECRET;
+
 export const authOptions = {
   providers: [
     Auth0Provider({
@@ -9,7 +11,7 @@ export const authOptions = {
       issuer: process.env.AUTH0_ISSUER_BASE_URL,
     }),
   ],
-  secret: `${process.env.AUTH0_SECRET}`,
+  secret: secret,
 };
 
 export default NextAuth(authOptions);
