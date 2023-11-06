@@ -13,6 +13,7 @@ interface DocumentProps {
 
 export default function Home() {
   const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
   const [documents, setDocuments] = useState<DocumentProps[]>([]);
 
@@ -24,6 +25,8 @@ export default function Home() {
     const input3 = e.target["input-3"].value;
 
     try {
+      setLoading(true);
+
       const response = await fetch(
         `${process.env.NEXTAUTH_URL}/api/embeddings`,
         {
@@ -41,12 +44,11 @@ export default function Home() {
       const data = await response.json();
       setAnswer(data.text);
       setDocuments(data.matches);
+      setLoading(false);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
-  console.log(documents);
 
   return (
     <>
@@ -72,19 +74,31 @@ export default function Home() {
         ) : (
           <div className="main-container">
             <div className="output-container">
+              {loading && (
+                <div className="loading-indicator">
+                  <p>Loading...</p>
+                </div>
+              )}
+
               <div className="chat-container">
                 <strong>Answer</strong>
-                <p>{answer}</p>
+                <p>{loading ? "Thinking..." : answer}</p>
               </div>
               <div className="chat-container">
                 <strong>Documents used</strong>
-                {documents.map((doc, index) => (
-                  <div key={index}>
-                    <h5>{doc.Question}</h5>
-                    <p>{doc.Title}</p>
-                    <p>{doc.text}</p>
+                {loading ? (
+                  <div className="loading-indicator">
+                    <p>Thinking...</p>
                   </div>
-                ))}
+                ) : (
+                  documents.map((doc, index) => (
+                    <div key={index}>
+                      <h5>{doc.Question}</h5>
+                      <p>{doc.Title}</p>
+                      <p>{doc.text}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
