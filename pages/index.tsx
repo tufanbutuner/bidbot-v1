@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
+import { IoSend } from "react-icons/io5";
 
 interface DocumentProps {
   Question: string;
@@ -14,13 +15,16 @@ interface DocumentProps {
 export default function Home() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [prompt, _] = useState(
+    "You work for Transform UK. As a smart, commercially aware professional, who is passionate about helping clients and enjoys solving difficult problems, you write in an active voice with empathy and enthusiasm to distil difficult and technical ideas into simple terms. You have been asked to write 100 words to answer the question using only the context below."
+  );
   const [answer, setAnswer] = useState("");
   const [documents, setDocuments] = useState<DocumentProps[]>([]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // const input1 = e.target["input-1"].value;
+    const input1 = e.target["input-1"].value;
     const input2 = parseInt(e.target["input-2"].value, 10);
     const input3 = e.target["input-3"].value;
 
@@ -33,6 +37,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          input1,
           input2,
           input3,
         }),
@@ -73,9 +78,13 @@ export default function Home() {
             <div className="output-container">
               <div className="chat-container">
                 <strong>Answer</strong>
-                <p className="answer-container">
-                  {loading ? "Thinking..." : answer}
-                </p>
+                {loading ? (
+                  <div className="loading-indicator">
+                    <p>Thinking...</p>
+                  </div>
+                ) : (
+                  <p className="answer-container">{answer}</p>
+                )}
               </div>
               <div className="chat-container">
                 <strong>Documents used</strong>
@@ -97,15 +106,17 @@ export default function Home() {
 
             <form className="input-container" onSubmit={handleSubmit}>
               <div className="input-block">
+                <span>Prompt context</span>
                 <div className="input-block">
-                  <input
-                    type="text"
+                  <textarea
                     name="input-1"
                     placeholder="Prompt context"
+                    defaultValue={prompt}
                   />
                 </div>
 
                 <div className="input-block">
+                  <span>Amount of documents (between 2-15) for context</span>
                   <input
                     type="number"
                     name="input-2"
@@ -117,13 +128,16 @@ export default function Home() {
                 </div>
 
                 <div className="input-block">
+                  <span>Send a message</span>
                   <textarea
                     name="input-3"
                     placeholder="Send a message"
                     required
                   />
+                  <button className="submit-button" type="submit">
+                    <IoSend size={20} />
+                  </button>
                 </div>
-                <button type="submit">Shiny Do Stuff Button</button>
               </div>
             </form>
           </div>

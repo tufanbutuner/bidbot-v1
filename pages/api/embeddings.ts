@@ -8,11 +8,16 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    let input1 = req.body.input1;
+    if (input1.length > 4000) {
+      input1 = input1.substring(0, 4000);
+    }
     const input2 = parseInt(req.body.input2, 10);
+    const input3 = req.body.input3;
 
     const result = await createEmbeddings({
       model: "text-embedding-ada-002",
-      input: req.body.input3,
+      input: input3,
     });
 
     const index = pinecone.index(`${process.env.PINECONE_INDEX_NAME}`);
@@ -25,11 +30,11 @@ export default async function handler(
 
     const matches = queryResponse.matches.map((match) => match.metadata);
 
-    console.log(matches);
+    // console.log(matches);
 
-    const context = matches.map((match: any) => match.text).join("\n");
+    // const context = matches.map((match: any) => match.text).join("\n");
 
-    const prompt = getPrompt(context, req.body.input3);
+    const prompt = getPrompt(input1, input3);
 
     const messages = [];
 
@@ -50,7 +55,7 @@ export default async function handler(
 
     console.log(text);
 
-    res.status(200).json({ matches, text });
+    res.status(200).json({ prompt, matches, text });
   } catch (error) {
     res.status(500).json({ message: "Error creating embeddings" });
   }

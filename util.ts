@@ -39,9 +39,7 @@ export const createEmbeddings = async ({
 };
 
 // Template and context to build the prompt
-const template = `Answer the question as truthfully and accurately as possible using the provided context.
-If the answer is not contained within the text below, say "Sorry, I don't have that information.".
-
+const template = `
 Context: {CONTEXT}
 
 Question: {QUERY}
