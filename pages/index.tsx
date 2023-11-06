@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
+import { OpenAiHeaders } from "../config";
 
 interface DocumentProps {
   Question: string;
@@ -31,9 +32,7 @@ export default function Home() {
         `${process.env.NEXTAUTH_URL}/api/embeddings`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: OpenAiHeaders,
           body: JSON.stringify({
             input2,
             input3,
