@@ -8,49 +8,53 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const input2 = parseInt(req.body.input2, 10);
+    const authToken = (req.headers.authorization || "").split("Bearer ").at(1);
 
-    const result = await createEmbeddings({
-      model: "text-embedding-ada-002",
-      input: req.body.input3,
-    });
+    if (authToken && authToken === process.env.OPENAI_API_KEY) {
+      const input2 = parseInt(req.body.input2, 10);
 
-    const index = pinecone.index(`${process.env.PINECONE_INDEX_NAME}`);
+      const result = await createEmbeddings({
+        model: "text-embedding-ada-002",
+        input: req.body.input3,
+      });
 
-    const queryResponse = await index.query({
-      vector: result,
-      topK: input2,
-      includeMetadata: true,
-    });
+      const index = pinecone.index(`${process.env.PINECONE_INDEX_NAME}`);
 
-    const matches = queryResponse.matches.map((match) => match.metadata);
+      const queryResponse = await index.query({
+        vector: result,
+        topK: input2,
+        includeMetadata: true,
+      });
 
-    console.log(matches);
+      const matches = queryResponse.matches.map((match) => match.metadata);
 
-    const context = matches.map((match: any) => match.text).join("\n");
+      console.log(matches);
 
-    const prompt = getPrompt(context, req.body.input3);
+      const context = matches.map((match: any) => match.text).join("\n");
 
-    const messages = [];
+      const prompt = getPrompt(context, req.body.input3);
 
-    messages.push({
-      role: "user",
-      content: prompt,
-    });
+      const messages = [];
 
-    const reply = await chatCompletions({
-      body: {
-        model: "gpt-3.5-turbo",
-        messages,
-      },
-    });
+      messages.push({
+        role: "user",
+        content: prompt,
+      });
 
-    const data = await reply.json();
-    const text = data.choices[0].message.content;
+      const reply = await chatCompletions({
+        body: {
+          model: "gpt-3.5-turbo",
+          messages,
+        },
+      });
 
-    console.log(text);
+      const data = await reply.json();
+      const text = data.choices[0].message.content;
 
-    res.status(200).json({ matches, text });
+      console.log(text);
+
+      res.status(200).json({ matches, text });
+    }
   } catch (error) {
     res.status(500).json({ message: "Error creating embeddings" });
   }
