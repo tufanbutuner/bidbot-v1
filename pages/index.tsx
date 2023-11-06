@@ -27,19 +27,16 @@ export default function Home() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/embeddings`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            input2,
-            input3,
-          }),
-        }
-      );
+      const response = await fetch(`/api/embeddings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input2,
+          input3,
+        }),
+      });
 
       const data = await response.json();
       setAnswer(data.text);
