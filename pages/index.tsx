@@ -21,7 +21,7 @@ export default function Home() {
     e.preventDefault();
 
     // const input1 = e.target["input-1"].value;
-    const input2 = e.target["input-2"].value;
+    const input2 = parseInt(e.target["input-2"].value, 10);
     const input3 = e.target["input-3"].value;
 
     try {
