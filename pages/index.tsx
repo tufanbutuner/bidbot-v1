@@ -24,16 +24,19 @@ export default function Home() {
     const input3 = e.target["input-3"].value;
 
     try {
-      const response = await fetch("http://localhost:3000/api/embeddings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input2,
-          input3,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXTAUTH_URL}/api/embeddings`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input2,
+            input3,
+          }),
+        }
+      );
 
       const data = await response.json();
       setAnswer(data.text);

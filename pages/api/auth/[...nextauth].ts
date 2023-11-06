@@ -9,6 +9,7 @@ export const authOptions = {
       issuer: process.env.AUTH0_ISSUER_BASE_URL,
     }),
   ],
+  secret: `${process.env.AUTH0_SECRET}`,
 };
 
 export default NextAuth(authOptions);
