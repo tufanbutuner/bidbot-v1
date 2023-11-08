@@ -34,20 +34,25 @@ export const createEmbeddings = async ({
 
     return data[0].embedding;
   } catch (error: any) {
-    throw new Error("Error creating embeddings: " + error.message);
+    throw new Error("Error creating embeddings: " + error);
   }
 };
 
 // Template and context to build the prompt
-const template = `
-Context: {CONTEXT}
-
+const template = `{CONTEXT_FROM_USER}
+Context: {CONTEXT_FROM_DATABASE}
 Question: {QUERY}
-
 Answer: `;
 
-export const getPrompt = (context: string, query: any) => {
-  return template.replace("{CONTEXT}", context).replace("{QUERY}", query);
+export const getPrompt = (
+  userContext: string,
+  dataContext: string,
+  query: any
+) => {
+  return template
+    .replace("{CONTEXT_FROM_USER}", userContext)
+    .replace("{CONTEXT_FROM_DATABASE}", dataContext)
+    .replace("{QUERY}", query);
 };
 
 export const chatCompletions = async ({ body }: any) => {

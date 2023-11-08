@@ -30,11 +30,9 @@ export default async function handler(
 
     const matches = queryResponse.matches.map((match) => match.metadata);
 
-    // console.log(matches);
+    const contextFromDb = matches.map((match: any) => match.text).join("\n");
 
-    // const context = matches.map((match: any) => match.text).join("\n");
-
-    const prompt = getPrompt(input1, input3);
+    const prompt = getPrompt(input1, contextFromDb, input3);
 
     const messages = [];
 
@@ -51,12 +49,12 @@ export default async function handler(
     });
 
     const data = await reply.json();
+
     const text = data.choices[0].message.content;
 
-    console.log(text);
-
     res.status(200).json({ prompt, matches, text });
-  } catch (error) {
-    res.status(500).json({ message: "Error creating embeddings" });
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).json({ message: "Error getting a response." });
   }
 }
