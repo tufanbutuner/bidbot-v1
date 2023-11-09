@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
+import ReactMarkdown from "react-markdown";
 import Tooltip from "../components/Tooltip";
 
 interface DocumentProps {
@@ -148,7 +149,11 @@ export default function Home() {
                     <p>Thinking...</p>
                   </div>
                 ) : (
-                  answer && <p className="answer-container">{answer}</p>
+                  answer && (
+                    <p className="answer-container">
+                      <ReactMarkdown>{answer}</ReactMarkdown>
+                    </p>
+                  )
                 )}
               </div>
               <div className="chat-container">
