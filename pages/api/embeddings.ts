@@ -45,6 +45,8 @@ export default async function handler(
       body: {
         model: "gpt-3.5-turbo",
         messages,
+        temperature: 0,
+        max_tokens: 200,
       },
     });
 
