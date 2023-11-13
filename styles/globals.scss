@@ -175,6 +175,10 @@ a {
   &:hover {
     background: #333333;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .input-block-header {
@@ -205,6 +209,11 @@ a {
 
 .tooltiptext {
   font-size: 0.8rem;
+  white-space: normal; /* Allow text to wrap within the tooltip */
+  word-wrap: break-word; /* Ensure long words break properly */
+  text-align: center; /* Center the text within the tooltip */
+  left: 50%;
+  transform: translateX(-50%); /* Center the tooltip horizontally */
 }
 
 .tooltip:hover .tooltiptext {
@@ -215,6 +224,10 @@ a {
   .page-container {
     display: flex;
     flex-direction: column;
+  }
+
+  .tooltiptext {
+    max-width: 100%; /* Adjust the maximum width for mobile devices */
   }
 
   .navbar-container {

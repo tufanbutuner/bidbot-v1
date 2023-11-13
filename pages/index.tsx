@@ -27,6 +27,7 @@ export default function Home() {
     input2: true,
     input3: true,
   });
+  const [disableButton, setDisableButton] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -53,6 +54,7 @@ export default function Home() {
     if (inputValidation) {
       try {
         setLoading(true);
+        setDisableButton(true);
 
         const response = await fetch(`/api/embeddings`, {
           method: "POST",
@@ -72,6 +74,10 @@ export default function Home() {
         setLoading(false);
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 5000);
       }
     }
   };
@@ -135,7 +141,11 @@ export default function Home() {
                   placeholder="Prompt Question"
                   required
                 />
-                <button className="submit-button" type="submit">
+                <button
+                  className="submit-button"
+                  type="submit"
+                  disabled={disableButton}
+                >
                   <IoSend size={20} />
                 </button>
               </div>
