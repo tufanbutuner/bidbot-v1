@@ -225,3 +225,16 @@ a {
     width: 100%;
   }
 }
+
+.answer-metadata-container {
+  display: flex;
+  gap: 1rem;
+
+  .answer-metadata {
+    background: #ec671b;
+    padding: 0.5rem;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+}
