@@ -28,18 +28,29 @@ export default async function handler(
       includeMetadata: true,
     });
 
-    const matches = queryResponse.matches.map((match) => match.metadata);
+    const matches = queryResponse.matches.map((match) => ({
+      score: match.score,
+      metadata: match.metadata,
+    }));
 
-    const contextFromDb = matches.map((match: any) => match.text).join("\n");
+    const contextFromDb = matches
+      .map((match) => match.metadata?.text)
+      .join("\n");
 
     const prompt = getPrompt(input1, contextFromDb, input3);
 
     const messages = [];
 
-    messages.push({
-      role: "user",
-      content: prompt,
-    });
+    messages.push(
+      {
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: input3,
+      }
+    );
 
     const reply = await chatCompletions({
       body: {
@@ -54,7 +65,13 @@ export default async function handler(
 
     const text = data.choices[0].message.content;
 
-    res.status(200).json({ prompt, matches, text });
+    const wordCount = text
+      .split(/\s+/)
+      .filter((word: string) => word.length > 0).length;
+
+    const charCount = text.length;
+
+    res.status(200).json({ prompt, matches, text, wordCount, charCount });
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ message: "Error getting a response." });
