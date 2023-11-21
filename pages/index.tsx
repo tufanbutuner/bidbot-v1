@@ -134,6 +134,24 @@ export default function Home() {
                 />
 
                 <Input
+                  label="Up words"
+                  tooltipText="Words that you wish to include."
+                  type="text"
+                  name="up"
+                  placeholder="Words that you wish to include."
+                  required
+                />
+
+                <Input
+                  label="Down words"
+                  tooltipText="Words that you don't wish to include."
+                  type="text"
+                  name="down"
+                  placeholder="Words that you don't wish to include."
+                  required
+                />
+
+                <Input
                   label="Context Documents (between 2-10 works best)"
                   tooltipText="The LLM will only answer based on these documents and these are the documents most similar to your question. So consider changing the question if you want different context documents."
                   type="number"
