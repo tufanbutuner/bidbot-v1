@@ -166,7 +166,7 @@ export default function Home() {
                   name="input-2"
                   placeholder="Context Documents (25 or less for best results)"
                   min={2}
-                  max={15}
+                  max={25}
                   required
                 />
 
