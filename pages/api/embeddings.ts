@@ -1,7 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { ChatCompletionMessageParam } from "openai/resources";
+import { encoding_for_model } from "tiktoken";
 import { pinecone } from "../../config";
 import { chatCompletions, createEmbeddings, getPrompt } from "../../util";
+
+const model = "gpt-3.5-turbo";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,6 +18,23 @@ export default async function handler(
     }
     const input2 = parseInt(req.body.input2, 10);
     const input3 = req.body.input3;
+    const wordsToInclude = req.body.wordsToInclude;
+    const wordsToExclude = req.body.wordsToExclude;
+
+    const encoding = encoding_for_model(model);
+    const tokenLimit = 3700;
+
+    const promptTokens = encoding.encode(
+      [input1, input2, input3, wordsToInclude, wordsToExclude].join(" ")
+    ).length;
+
+    if (promptTokens > tokenLimit) {
+      console.error(`Token limit exceeded. Max allowed tokens: ${tokenLimit}`);
+      res.status(400).json({
+        message: `Token limit exceeded. Max allowed tokens: ${tokenLimit}`,
+      });
+      return;
+    }
 
     const result = await createEmbeddings({
       model: "text-embedding-ada-002",
@@ -39,7 +60,7 @@ export default async function handler(
 
     const prompt = getPrompt(input1, contextFromDb, input3);
 
-    const messages = [];
+    const messages: ChatCompletionMessageParam[] = [];
 
     messages.push(
       {
@@ -52,9 +73,14 @@ export default async function handler(
       }
     );
 
+    const tokenAmount = messages.reduce(
+      (total, msg) => total + encoding.encode(msg.content ?? "").length,
+      0
+    );
+
     const reply = await chatCompletions({
       body: {
-        model: "gpt-3.5-turbo",
+        model: model,
         messages,
         temperature: 0,
         max_tokens: 200,
@@ -71,7 +97,9 @@ export default async function handler(
 
     const charCount = text.length;
 
-    res.status(200).json({ prompt, matches, text, wordCount, charCount });
+    res
+      .status(200)
+      .json({ prompt, matches, text, wordCount, charCount, tokenAmount });
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ message: "Error getting a response." });

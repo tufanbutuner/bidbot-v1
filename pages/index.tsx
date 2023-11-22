@@ -30,6 +30,7 @@ export default function Home() {
     text: "",
     wordCount: 0,
     characterCount: 0,
+    tokenAmount: 0,
   });
   const [documents, setDocuments] = useState<DocumentProps>({
     score: 0,
@@ -47,6 +48,12 @@ export default function Home() {
     const input1 = e.target["input-1"].value;
     const input2 = parseInt(e.target["input-2"].value, 10);
     const input3 = e.target["input-3"].value;
+
+    const include = e.target["promote"].value;
+    const exclude = e.target["exclude"].value;
+
+    let wordsToInclude = include.split(",").map((word: string) => word.trim());
+    let wordsToExclude = exclude.split(",").map((word: string) => word.trim());
 
     setInputValidation({
       input1: input1.trim().length > 0,
@@ -72,6 +79,8 @@ export default function Home() {
             input1,
             input2,
             input3,
+            wordsToInclude,
+            wordsToExclude,
           }),
         });
 
@@ -81,6 +90,7 @@ export default function Home() {
           text: data.text,
           wordCount: data.wordCount,
           characterCount: data.charCount,
+          tokenAmount: data.tokenAmount,
         });
 
         setDocuments({
@@ -134,21 +144,19 @@ export default function Home() {
                 />
 
                 <Input
-                  label="Up words"
-                  tooltipText="Words that you wish to include."
+                  label="Promoted words"
+                  tooltipText="Enter words that you wish to include, separated by commas, e.g. 'agile, transformation, discovery'."
                   type="text"
-                  name="up"
-                  placeholder="Words that you wish to include."
-                  required
+                  name="promote"
+                  placeholder="Enter words that you wish to include, separated by commas, e.g. 'agile, transformation, discovery'."
                 />
 
                 <Input
-                  label="Down words"
-                  tooltipText="Words that you don't wish to include."
+                  label="Excluded words"
+                  tooltipText="Enter words that you wish to exclude, separated by commas, e.g. 'track record, intranet, delivery'."
                   type="text"
-                  name="down"
-                  placeholder="Words that you don't wish to include."
-                  required
+                  name="exclude"
+                  placeholder="Enter words that you wish to exclude, separated by commas, e.g. 'track record, intranet, delivery'."
                 />
 
                 <Input
@@ -199,6 +207,9 @@ export default function Home() {
                         <p className="answer-metadata">
                           Character count: {answer.characterCount}
                         </p>
+                        <p className="answer-metadata">
+                          Token amount: {answer.tokenAmount}
+                        </p>
                       </div>
                     </div>
                   )
@@ -211,18 +222,21 @@ export default function Home() {
                   <div className="loading-indicator">
                     <p>Thinking...</p>
                   </div>
-                ) : documents.metadata && documents.metadata.length > 0 ? (
+                ) : (
+                  documents.metadata &&
+                  documents.metadata.length > 0 &&
                   documents.metadata.map(
-                    (doc: DocumentMetadata, index: number) => (
+                    (doc: DocumentMetadata, index: any) => (
                       <div key={index} className="document-answer-container">
+                        <span className="answer-metadata">
+                          Score: {documents.score[index].toFixed(2)}
+                        </span>
                         <h5>{doc.Question}</h5>
                         <p>{doc.Title}</p>
                         <p>{doc.text}</p>
                       </div>
                     )
                   )
-                ) : (
-                  <p>No documents available.</p>
                 )}
               </div>
             </div>
