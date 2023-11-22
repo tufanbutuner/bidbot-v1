@@ -14,7 +14,7 @@ interface DocumentMetadata {
   text: string;
 }
 interface DocumentProps {
-  score: number;
+  score: number[];
   metadata: DocumentMetadata[];
 }
 
@@ -33,7 +33,7 @@ export default function Home() {
     tokenAmount: 0,
   });
   const [documents, setDocuments] = useState<DocumentProps>({
-    score: 0,
+    score: [0],
     metadata: [],
   });
   const [inputValidation, setInputValidation] = useState({
@@ -160,11 +160,11 @@ export default function Home() {
                 />
 
                 <Input
-                  label="Context Documents (between 2-10 works best)"
+                  label="Context Documents (25 or less for best results)"
                   tooltipText="The LLM will only answer based on these documents and these are the documents most similar to your question. So consider changing the question if you want different context documents."
                   type="number"
                   name="input-2"
-                  placeholder="Context Documents (between 2-10 works best)"
+                  placeholder="Context Documents (25 or less for best results)"
                   min={2}
                   max={15}
                   required
@@ -225,18 +225,16 @@ export default function Home() {
                 ) : (
                   documents.metadata &&
                   documents.metadata.length > 0 &&
-                  documents.metadata.map(
-                    (doc: DocumentMetadata, index: any) => (
-                      <div key={index} className="document-answer-container">
-                        <span className="answer-metadata">
-                          Score: {documents.score[index].toFixed(2)}
-                        </span>
-                        <h5>{doc.Question}</h5>
-                        <p>{doc.Title}</p>
-                        <p>{doc.text}</p>
-                      </div>
-                    )
-                  )
+                  documents.metadata.map((doc: DocumentMetadata, index) => (
+                    <div key={index} className="document-answer-container">
+                      <span className="answer-metadata">
+                        Score: {documents.score[index].toFixed(2)}
+                      </span>
+                      <h5>{doc.Question}</h5>
+                      <p>{doc.Title}</p>
+                      <p>{doc.text}</p>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
