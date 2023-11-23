@@ -1,11 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { ChatCompletionMessageParam } from "openai/resources";
-import { encoding_for_model } from "tiktoken";
 import { pinecone } from "../../config";
-import { chatCompletions, createEmbeddings, getPrompt } from "../../util";
-
-const model = "gpt-3.5-turbo";
+import {
+  chatCompletions,
+  createEmbeddings,
+  createLogitBias,
+  encoding,
+  getPrompt,
+  model,
+} from "../../util";
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,7 +25,8 @@ export default async function handler(
     const wordsToInclude = req.body.wordsToInclude;
     const wordsToExclude = req.body.wordsToExclude;
 
-    const encoding = encoding_for_model(model);
+    const logit_bias = createLogitBias(wordsToInclude, wordsToExclude);
+
     const tokenLimit = 3700;
 
     const promptTokens = encoding.encode(
@@ -84,6 +89,7 @@ export default async function handler(
         messages,
         temperature: 0,
         max_tokens: 200,
+        logit_bias: logit_bias,
       },
     });
 

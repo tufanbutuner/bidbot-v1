@@ -1,3 +1,4 @@
+import { encoding_for_model } from "tiktoken";
 import { OpenAiHeaders } from "./config";
 
 interface CreateEmbeddingsResponse {
@@ -14,6 +15,9 @@ interface QueryDbProps {
   vector: string;
   namespace: string;
 }
+
+export const model = "gpt-3.5-turbo";
+export const encoding = encoding_for_model(model);
 
 export const createEmbeddings = async ({
   input,
@@ -64,3 +68,32 @@ export const chatCompletions = async ({ body }: any) => {
 
   return response;
 };
+
+export function createLogitBias(promote: string[], exclude: string[]) {
+  const posFactor = 5;
+  const negFactor = -100;
+  const retLogit: Record<string, number> = {};
+
+  const processWords = (words: string[], factor: number) => {
+    for (const word of words) {
+      for (const token of [
+        ...encoding.encode(word),
+        ...encoding.encode(" " + word),
+      ]) {
+        retLogit[token] = factor;
+      }
+    }
+  };
+
+  processWords(promote, posFactor);
+  processWords(exclude, negFactor);
+
+  console.log(
+    "Excluded Words: " +
+      exclude.join(", ") +
+      "\nPromoted Words: " +
+      promote.join(", ")
+  );
+
+  return retLogit;
+}
