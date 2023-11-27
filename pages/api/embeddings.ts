@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { RecordMetadata } from "@pinecone-database/pinecone";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { pinecone } from "../../config";
 import {
@@ -10,6 +11,12 @@ import {
   getPrompt,
   model,
 } from "../../util";
+
+interface MatchesProps {
+  score: number | undefined;
+  metadata: RecordMetadata | undefined;
+  tokens: number;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -54,9 +61,10 @@ export default async function handler(
       includeMetadata: true,
     });
 
-    const matches = queryResponse.matches.map((match) => ({
+    const matches: MatchesProps[] = queryResponse.matches.map((match) => ({
       score: match.score,
       metadata: match.metadata,
+      tokens: encoding.encode([match.metadata?.text].join(" ")).length,
     }));
 
     const contextFromDb = matches
@@ -90,6 +98,9 @@ export default async function handler(
         temperature: 0,
         max_tokens: 200,
         logit_bias: logit_bias,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        stop: "none",
       },
     });
 

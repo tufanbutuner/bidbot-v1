@@ -1,6 +1,5 @@
 "use client";
 import { useSession } from "next-auth/react";
-import Head from "next/head";
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import ReactMarkdown from "react-markdown";
@@ -16,6 +15,7 @@ interface DocumentMetadata {
 interface DocumentProps {
   score: number[];
   metadata: DocumentMetadata[];
+  tokens: string[] | string;
 }
 
 export default function Home() {
@@ -35,6 +35,7 @@ export default function Home() {
   const [documents, setDocuments] = useState<DocumentProps>({
     score: [0],
     metadata: [],
+    tokens: "",
   });
   const [inputValidation, setInputValidation] = useState({
     input1: true,
@@ -94,6 +95,7 @@ export default function Home() {
         });
 
         setDocuments({
+          tokens: data.matches.map((match: DocumentProps) => match.tokens),
           metadata: data.matches.map((match: DocumentProps) => match.metadata),
           score: data.matches.map((match: DocumentProps) => match.score),
         });
@@ -111,20 +113,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>BidBot</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-
       <main className="container">
         {!session ? (
           <div className="sign-in-message-container">
@@ -227,9 +215,14 @@ export default function Home() {
                   documents.metadata.length > 0 &&
                   documents.metadata.map((doc: DocumentMetadata, index) => (
                     <div key={index} className="document-answer-container">
-                      <span className="answer-metadata">
-                        Score: {documents.score[index].toFixed(2)}
-                      </span>
+                      <div className="answer-metadata-container">
+                        <span className="answer-metadata">
+                          Score: {documents.score[index].toFixed(2)}
+                        </span>
+                        <span className="answer-metadata">
+                          Tokens: {documents.tokens[index]}
+                        </span>
+                      </div>
                       <h5>{doc.Question}</h5>
                       <p>{doc.Title}</p>
                       <p>{doc.text}</p>
