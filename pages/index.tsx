@@ -1,9 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { IoSend } from "react-icons/io5";
-import ReactMarkdown from "react-markdown";
-import Input from "../components/Input";
+import DocumentDisplay from "../components/DocumentDisplay";
+import InputForm from "../components/InputForm";
+import useFormSubmit from "../hooks/useFormSubmit";
 
 interface DocumentMetadata {
   Question: string;
@@ -20,12 +20,8 @@ interface DocumentProps {
 
 export default function Home() {
   const { data: session } = useSession();
-  const [loading, setLoading] = useState(false);
-  const [disableButton, setDisableButton] = useState(false);
-
-  const [prompt, _] = useState(
-    "You work for Transform UK. As a smart, commercially aware professional, who is passionate about helping clients and enjoys solving difficult problems, you write in an active voice with empathy and enthusiasm to distil difficult and technical ideas into simple terms. You have been asked to write 100 words to answer the question using only the context below."
-  );
+  const { handleSubmit, loading, error, responseData, disableButton } =
+    useFormSubmit();
   const [answer, setAnswer] = useState({
     text: "",
     wordCount: 0,
@@ -37,79 +33,45 @@ export default function Home() {
     metadata: [],
     tokens: "",
   });
-  const [inputValidation, setInputValidation] = useState({
-    input1: true,
-    input2: true,
-    input3: true,
-  });
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const onFormSubmit = async (formData: any) => {
+    await handleSubmit(formData);
 
-    const input1 = e.target["input-1"].value;
-    const input2 = parseInt(e.target["input-2"].value, 10);
-    const input3 = e.target["input-3"].value;
+    if (responseData == null) {
+      setAnswer({
+        text: "",
+        wordCount: 0,
+        characterCount: 0,
+        tokenAmount: 0,
+      });
 
-    const include = e.target["promote"].value;
-    const exclude = e.target["exclude"].value;
+      setDocuments({
+        score: [0],
+        metadata: [],
+        tokens: "",
+      });
+    }
 
-    let wordsToInclude = include.split(",").map((word: string) => word.trim());
-    let wordsToExclude = exclude.split(",").map((word: string) => word.trim());
+    if (responseData) {
+      setAnswer({
+        text: responseData.text,
+        wordCount: responseData.wordCount,
+        characterCount: responseData.charCount,
+        tokenAmount: responseData.tokenAmount,
+      });
 
-    setInputValidation({
-      input1: input1.trim().length > 0,
-      input2: input2 >= 2 && input2 <= 15,
-      input3: input3.trim().length > 0,
-    });
-
-    if (
-      inputValidation.input1 &&
-      inputValidation.input2 &&
-      inputValidation.input3
-    ) {
-      try {
-        setLoading(true);
-        setDisableButton(true);
-
-        const response = await fetch(`/api/embeddings`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            input1,
-            input2,
-            input3,
-            wordsToInclude,
-            wordsToExclude,
-          }),
-        });
-
-        const data = await response.json();
-
-        setAnswer({
-          text: data.text,
-          wordCount: data.wordCount,
-          characterCount: data.charCount,
-          tokenAmount: data.tokenAmount,
-        });
-
-        setDocuments({
-          tokens: data.matches.map((match: DocumentProps) => match.tokens),
-          metadata: data.matches.map((match: DocumentProps) => match.metadata),
-          score: data.matches.map((match: DocumentProps) => match.score),
-        });
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setTimeout(() => {
-          setDisableButton(false);
-        }, 5000);
-      }
+      setDocuments({
+        score: responseData.matches.map((match) => match.score),
+        metadata: responseData.matches.map((match) => match.metadata),
+        tokens: responseData.matches.flatMap((match) =>
+          Array.isArray(match.tokens) ? match.tokens : [match.tokens]
+        ),
+      });
     }
   };
+
+  console.log(answer);
+  console.log(documents);
 
   return (
     <>
@@ -120,117 +82,13 @@ export default function Home() {
           </div>
         ) : (
           <div className="main-container">
-            <form className="input-container" onSubmit={handleSubmit}>
-              <div className="input-block">
-                <Input
-                  isTextarea
-                  label="Prompt Basis"
-                  tooltipText='This text forms the basis of the prompt, it sets the guidelines, style and format and asks the LLM to "role play" to answer the question. You may change it from the default to try different approaches.'
-                  name="input-1"
-                  placeholder="Prompt context"
-                  defaultValue={prompt}
-                />
-
-                <Input
-                  label="Promoted words"
-                  tooltipText="Enter words that you wish to include, separated by commas, e.g. 'agile, transformation, discovery'."
-                  type="text"
-                  name="promote"
-                  placeholder="Enter words that you wish to include, separated by commas, e.g. 'agile, transformation, discovery'."
-                />
-
-                <Input
-                  label="Excluded words"
-                  tooltipText="Enter words that you wish to exclude, separated by commas, e.g. 'track record, intranet, delivery'."
-                  type="text"
-                  name="exclude"
-                  placeholder="Enter words that you wish to exclude, separated by commas, e.g. 'track record, intranet, delivery'."
-                />
-
-                <Input
-                  label="Context Documents (25 or less for best results)"
-                  tooltipText="The LLM will only answer based on these documents and these are the documents most similar to your question. So consider changing the question if you want different context documents."
-                  type="number"
-                  name="input-2"
-                  placeholder="Context Documents (25 or less for best results)"
-                  min={2}
-                  max={25}
-                  required
-                />
-
-                <Input
-                  isTextarea
-                  label="Prompt Question"
-                  tooltipText="This is the question you wish to create your 100 worder around, this will also determine which context documents the system retrieves."
-                  name="input-3"
-                  placeholder="Prompt Question"
-                  required
-                />
-
-                <button
-                  className="submit-button"
-                  type="submit"
-                  disabled={disableButton}
-                >
-                  <IoSend size={20} />
-                </button>
-              </div>
-            </form>
-
-            <div className="output-container">
-              <div className="chat-container">
-                <strong>Answer</strong>
-                {loading ? (
-                  <div className="loading-indicator">
-                    <p>Thinking...</p>
-                  </div>
-                ) : (
-                  answer.text && (
-                    <div className="answer-container">
-                      <ReactMarkdown>{answer.text}</ReactMarkdown>
-                      <div className="answer-metadata-container">
-                        <p className="answer-metadata">
-                          Word count: {answer.wordCount}
-                        </p>
-                        <p className="answer-metadata">
-                          Character count: {answer.characterCount}
-                        </p>
-                        <p className="answer-metadata">
-                          Token amount: {answer.tokenAmount}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-
-              <div className="chat-container">
-                <strong>Documents used</strong>
-                {loading ? (
-                  <div className="loading-indicator">
-                    <p>Thinking...</p>
-                  </div>
-                ) : (
-                  documents.metadata &&
-                  documents.metadata.length > 0 &&
-                  documents.metadata.map((doc: DocumentMetadata, index) => (
-                    <div key={index} className="document-answer-container">
-                      <div className="answer-metadata-container">
-                        <span className="answer-metadata">
-                          Score: {documents.score[index].toFixed(2)}
-                        </span>
-                        <span className="answer-metadata">
-                          Tokens: {documents.tokens[index]}
-                        </span>
-                      </div>
-                      <h5>{doc.Question}</h5>
-                      <p>{doc.Title}</p>
-                      <p>{doc.text}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
+            <InputForm onSubmit={onFormSubmit} disabled={disableButton} />
+            {error && <p className="error-message">{error}</p>}
+            <DocumentDisplay
+              documents={documents}
+              answer={answer}
+              loading={loading}
+            />
           </div>
         )}
       </main>
