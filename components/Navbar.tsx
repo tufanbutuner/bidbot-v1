@@ -1,11 +1,23 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Logo from "../assets/transform-logo.png";
 
 export default function Navbar() {
   const { data: session } = useSession();
 
   return (
     <div className="navbar-container">
-      <h1>BidBot</h1>
+      <div className="navbar-brand">
+        <h1>BidBot</h1>
+        <p>Powered by</p>
+        <Image
+          src={Logo}
+          height={50}
+          objectFit="contain"
+          alt="Transform UK logo"
+        />
+      </div>
+
       <ul>
         {session ? (
           <>
