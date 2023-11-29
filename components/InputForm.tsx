@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { IoSend } from "react-icons/io5";
 import Input from "./Input";
 
 export default function InputForm({ onSubmit, disabled }: any) {
@@ -31,8 +30,6 @@ export default function InputForm({ onSubmit, disabled }: any) {
         break;
     }
   };
-
-  console.log(disabled);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -107,7 +104,8 @@ export default function InputForm({ onSubmit, disabled }: any) {
         />
 
         <button className="submit-button" type="submit" disabled={disabled}>
-          <IoSend size={20} />
+          <p>Submit</p>
+          {/* <IoSend size={20} /> */}
         </button>
       </div>
     </form>

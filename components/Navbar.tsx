@@ -9,13 +9,16 @@ export default function Navbar() {
     <div className="navbar-container">
       <div className="navbar-brand">
         <h1>BidBot</h1>
-        <p>Powered by</p>
-        <Image
-          src={Logo}
-          height={50}
-          objectFit="contain"
-          alt="Transform UK logo"
-        />
+        <div className="navbar-image">
+          <p>Powered by</p>
+          <Image
+            src={Logo}
+            height={40}
+            width={100}
+            objectFit="contain"
+            alt="Transform UK logo"
+          />
+        </div>
       </div>
 
       <ul>

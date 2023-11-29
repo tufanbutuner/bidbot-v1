@@ -157,10 +157,6 @@ a {
 }
 
 .submit-button {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-
   background: #ec671b;
   color: white;
   border: none;
@@ -221,6 +217,12 @@ a {
   display: flex;
   align-items: center;
   gap: 2rem;
+}
+
+.navbar-image {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .footer-container {

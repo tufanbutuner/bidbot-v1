@@ -57,9 +57,6 @@ export default function Home() {
     }
   }, [responseData]);
 
-  console.log(answer);
-  console.log(documents);
-
   return (
     <>
       <main className="container">
