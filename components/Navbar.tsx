@@ -25,10 +25,14 @@ export default function Navbar() {
         {session ? (
           <>
             <li>{session.user?.name}</li>
-            <li onClick={() => signOut()}>Sign out</li>
+            <li className="auth-container" onClick={() => signOut()}>
+              Sign out
+            </li>
           </>
         ) : (
-          <li onClick={() => signIn()}>Sign in</li>
+          <li className="auth-container" onClick={() => signIn()}>
+            Sign in
+          </li>
         )}
       </ul>
     </div>

@@ -107,7 +107,7 @@ a {
 
   li {
     display: inline;
-    margin-right: 10px;
+    margin-right: 1rem;
     font-weight: bold;
     cursor: pointer;
   }
@@ -243,14 +243,39 @@ a {
   font-weight: bold;
 }
 
+.auth-container {
+  border: 1px solid #fff;
+  padding: 0.5rem 1rem;
+}
+
 @media (max-width: 768px) {
   .page-container {
     display: flex;
     flex-direction: column;
   }
 
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+    textarea {
+      height: 180px;
+    }
+  }
+
   .navbar-container {
     width: 100%;
+    flex-direction: column;
+  }
+
+  .navbar-brand {
+    flex-direction: column;
+    gap: 0rem;
+
+    h1 {
+      margin-bottom: 0rem;
+    }
   }
 }
 
