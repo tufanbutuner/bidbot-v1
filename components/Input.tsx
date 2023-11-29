@@ -32,7 +32,7 @@ export default function Input({
   return (
     <>
       <div className="input-block-header">
-        <span>{label}</span>
+        <span className="input-label">{label}</span>
         <Tooltip text={tooltipText} />
       </div>
 

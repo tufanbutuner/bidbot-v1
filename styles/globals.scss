@@ -239,6 +239,10 @@ a {
   }
 }
 
+.input-label {
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   .page-container {
     display: flex;
