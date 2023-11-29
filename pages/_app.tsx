@@ -15,7 +15,7 @@ function MyApp({
   return (
     <SessionProvider session={pageProps.session}>
       <Head>
-        <title>BidBot</title>
+        <title>BidBot | Transform UK</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
