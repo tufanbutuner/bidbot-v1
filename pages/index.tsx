@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DocumentDisplay from "../components/DocumentDisplay";
 import InputForm from "../components/InputForm";
 import useFormSubmit from "../hooks/useFormSubmit";
@@ -36,22 +36,9 @@ export default function Home() {
 
   const onFormSubmit = async (formData: any) => {
     await handleSubmit(formData);
+  };
 
-    if (responseData == null) {
-      setAnswer({
-        text: "",
-        wordCount: 0,
-        characterCount: 0,
-        tokenAmount: 0,
-      });
-
-      setDocuments({
-        score: [0],
-        metadata: [],
-        tokens: "",
-      });
-    }
-
+  useEffect(() => {
     if (responseData) {
       setAnswer({
         text: responseData.text,
@@ -68,7 +55,7 @@ export default function Home() {
         ),
       });
     }
-  };
+  }, [responseData]);
 
   console.log(answer);
   console.log(documents);
