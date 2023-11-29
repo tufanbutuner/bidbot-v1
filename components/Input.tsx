@@ -11,6 +11,8 @@ interface InputProps {
   required?: boolean;
   isTextarea?: boolean;
   defaultValue?: string;
+  value?: string;
+  onChange?: any;
 }
 
 export default function Input({
@@ -24,6 +26,8 @@ export default function Input({
   required,
   isTextarea,
   defaultValue,
+  value,
+  onChange,
 }: InputProps) {
   return (
     <>
@@ -37,6 +41,8 @@ export default function Input({
           name={name}
           placeholder={placeholder}
           defaultValue={defaultValue}
+          value={value}
+          onChange={onChange}
         />
       ) : (
         <input
@@ -46,6 +52,9 @@ export default function Input({
           min={min}
           max={max}
           required={required}
+          defaultValue={defaultValue}
+          value={value}
+          onChange={onChange}
         />
       )}
     </>

@@ -2,6 +2,7 @@ import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/globals.scss";
 
@@ -29,6 +30,7 @@ function MyApp({
       <div className="page-container">
         <Navbar />
         <Component {...pageProps} />
+        <Footer />
       </div>
     </SessionProvider>
   );

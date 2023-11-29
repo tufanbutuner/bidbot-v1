@@ -12,6 +12,8 @@ import {
   model,
 } from "../../util";
 
+const MAX_TOKEN_LIMIT = 3700;
+
 interface MatchesProps {
   score: number | undefined;
   metadata: RecordMetadata | undefined;
@@ -33,20 +35,6 @@ export default async function handler(
     const wordsToExclude = req.body.wordsToExclude;
 
     const logit_bias = createLogitBias(wordsToInclude, wordsToExclude);
-
-    const tokenLimit = 3700;
-
-    const promptTokens = encoding.encode(
-      [input1, input2, input3, wordsToInclude, wordsToExclude].join(" ")
-    ).length;
-
-    if (promptTokens > tokenLimit) {
-      console.error(`Token limit exceeded. Max allowed tokens: ${tokenLimit}`);
-      res.status(400).json({
-        message: `Token limit exceeded. Max allowed tokens: ${tokenLimit}`,
-      });
-      return;
-    }
 
     const result = await createEmbeddings({
       model: "text-embedding-ada-002",
@@ -91,6 +79,13 @@ export default async function handler(
       0
     );
 
+    if (tokenAmount > MAX_TOKEN_LIMIT) {
+      const errorMessage = `Token limit exceeded: ${tokenAmount}. Max allowed tokens: ${MAX_TOKEN_LIMIT}. Please lower the context documents or shorten your query.`;
+      console.error(errorMessage);
+      res.status(400).json({ message: errorMessage });
+      return;
+    }
+
     const reply = await chatCompletions({
       body: {
         model: model,
@@ -119,6 +114,8 @@ export default async function handler(
       .json({ prompt, matches, text, wordCount, charCount, tokenAmount });
   } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "Error getting a response." });
+    res
+      .status(500)
+      .json({ message: "Error getting a response.", error: error.message });
   }
 }
