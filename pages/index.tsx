@@ -27,6 +27,7 @@ export default function Home() {
     wordCount: 0,
     characterCount: 0,
     tokenAmount: 0,
+    documentsUsed: 0,
   });
   const [documents, setDocuments] = useState<DocumentProps>({
     score: [0],
@@ -45,6 +46,7 @@ export default function Home() {
         wordCount: responseData.wordCount,
         characterCount: responseData.charCount,
         tokenAmount: responseData.tokenAmount,
+        documentsUsed: responseData.documentsUsed,
       });
 
       setDocuments({

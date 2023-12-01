@@ -39,7 +39,11 @@ export default function DocumentDisplay({ documents, answer, loading }: any) {
       </div>
 
       <div className="chat-container">
-        <strong>Documents used</strong>
+        {answer.documentsUsed > 0 ? (
+          <strong>Context documents used: {answer.documentsUsed}</strong>
+        ) : (
+          <strong> Documents used</strong>
+        )}
         {loading ? (
           <div className="loading-indicator">
             <p>Thinking...</p>
