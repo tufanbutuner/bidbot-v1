@@ -12,16 +12,18 @@ interface DocumentMetadata {
 export default function DocumentDisplay({ documents, answer, loading }: any) {
   return (
     <div className="output-container">
-      <div className="chat-container">
-        <strong>Answer</strong>
+      <div className="chat-container p-6 bg-white border border-gray-200 rounded-lg shadow">
+        <div>
+          <strong>Answer</strong>
+        </div>
+
         {loading ? (
           <div className="loading-indicator">
             <p>Thinking...</p>
           </div>
         ) : (
           answer.text && (
-            <div className="answer-container">
-              <ReactMarkdown>{answer.text}</ReactMarkdown>
+            <div className="answer-container flex flex-col gap-4">
               <div className="answer-metadata-container">
                 <p className="answer-metadata">
                   Word count: {answer.wordCount}
@@ -33,12 +35,15 @@ export default function DocumentDisplay({ documents, answer, loading }: any) {
                   Token amount: {answer.tokenAmount}
                 </p>
               </div>
+              <div>
+                <ReactMarkdown>{answer.text}</ReactMarkdown>
+              </div>
             </div>
           )
         )}
       </div>
 
-      <div className="chat-container">
+      <div className="chat-container p-6 bg-white border border-gray-200 rounded-lg shadow">
         {answer.documentsUsed > 0 ? (
           <strong>Context documents used: {answer.documentsUsed}</strong>
         ) : (
@@ -48,9 +53,14 @@ export default function DocumentDisplay({ documents, answer, loading }: any) {
           <div className="loading-indicator">
             <p>Thinking...</p>
           </div>
-        ) : documents.metadata && documents.metadata.length > 0 ? (
+        ) : (
+          documents.metadata &&
+          documents.metadata.length > 0 &&
           documents.metadata.map((doc: DocumentMetadata, index: number) => (
-            <div key={index} className="document-answer-container">
+            <div
+              key={index}
+              className="document-answer-container flex flex-col gap-4"
+            >
               <div className="answer-metadata-container">
                 <span className="answer-metadata">
                   Similarity Score: {documents.score[index].toFixed(2)}
@@ -64,8 +74,6 @@ export default function DocumentDisplay({ documents, answer, loading }: any) {
               <p>{doc.text}</p>
             </div>
           ))
-        ) : (
-          <p>No documents available.</p>
         )}
       </div>
     </div>

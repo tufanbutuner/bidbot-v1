@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import DocumentDisplay from "../components/DocumentDisplay";
-import Footer from "../components/Footer";
 import InputForm from "../components/InputForm";
 import LandingPage from "../components/LandingPage";
 import Navbar from "../components/Navbar";
@@ -69,18 +68,14 @@ export default function Home() {
       ) : (
         <>
           <Navbar />
-          <main className="container">
-            <div className="main-container">
-              <InputForm onSubmit={onFormSubmit} disabled={disableButton} />
-              {error && <p className="error-message">{error}</p>}
-              <DocumentDisplay
-                documents={documents}
-                answer={answer}
-                loading={loading}
-              />
-            </div>
+          <main className="main-container">
+            <InputForm onSubmit={onFormSubmit} disabled={disableButton} />
+            <DocumentDisplay
+              documents={documents}
+              answer={answer}
+              loading={loading}
+            />
           </main>
-          <Footer />
         </>
       )}
     </>
