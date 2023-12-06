@@ -14,6 +14,7 @@ interface ApiResponse {
   wordCount: number;
   charCount: number;
   tokenAmount: number;
+  documentsUsed: number;
   matches: Array<{
     score: number;
     metadata: DocumentMetadata;

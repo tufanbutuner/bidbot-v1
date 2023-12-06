@@ -55,9 +55,26 @@ export default async function handler(
       tokens: encoding.encode([match.metadata?.text].join(" ")).length,
     }));
 
-    const contextFromDb = matches
-      .map((match) => match.metadata?.text)
-      .join("\n");
+    let totalTokenCount = 0;
+    let includedContexts = [];
+    let documentsUsed = 0;
+
+    for (let match of matches) {
+      const tokenCount = match.tokens;
+
+      if (totalTokenCount + tokenCount > MAX_TOKEN_LIMIT) {
+        break;
+      }
+
+      totalTokenCount += tokenCount;
+      includedContexts.push(match.metadata?.text);
+      documentsUsed++;
+    }
+
+    console.log("totalTokenCount: " + totalTokenCount);
+    console.log("documents used: " + documentsUsed);
+
+    const contextFromDb = includedContexts.join("\n");
 
     const prompt = getPrompt(input1, contextFromDb, input3);
 
@@ -78,13 +95,6 @@ export default async function handler(
       (total, msg) => total + encoding.encode(msg.content ?? "").length,
       0
     );
-
-    if (tokenAmount > MAX_TOKEN_LIMIT) {
-      const errorMessage = `Token limit exceeded: ${tokenAmount}. Max allowed tokens: ${MAX_TOKEN_LIMIT}. Please lower the context documents or shorten your query.`;
-      console.error(errorMessage);
-      res.status(400).json({ message: errorMessage });
-      return;
-    }
 
     const reply = await chatCompletions({
       body: {
@@ -109,9 +119,16 @@ export default async function handler(
 
     const charCount = text.length;
 
-    res
-      .status(200)
-      .json({ prompt, matches, text, wordCount, charCount, tokenAmount });
+    res.status(200).json({
+      prompt,
+      matches,
+      text,
+      wordCount,
+      charCount,
+      totalTokenCount,
+      tokenAmount,
+      documentsUsed,
+    });
   } catch (error: any) {
     console.log(error);
     res

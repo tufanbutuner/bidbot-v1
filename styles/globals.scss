@@ -26,8 +26,58 @@ a {
 }
 
 .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.image-column {
+  position: relative;
+  background-color: black;
+}
+
+.title-column {
+  background-color: #ec671b;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  max-width: 100%;
+  padding: 4rem 0rem;
+
+  p {
+    text-align: center;
+    color: white;
+    margin: 0;
+  }
+}
+
+.sign-in-button {
+  background-color: white;
+  padding: 1rem 2rem;
+  opacity: 1;
+  transition: 0.3s;
+  cursor: pointer;
+  border-radius: 4px;
+
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333333;
+  width: 40%;
+  text-align: center;
+}
+
+.sign-in-button:hover {
+  background-color: #333333;
+  color: white;
+}
+
+.bidbot-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
 }
 
 .main-container {
@@ -36,7 +86,8 @@ a {
   justify-content: space-between;
   gap: 1rem;
   height: 100vh;
-  padding: 2rem;
+  width: 100%;
+  padding: 0rem 1rem 1rem 1rem;
 
   h1 {
     font-size: 2rem;
@@ -99,6 +150,8 @@ a {
   background-color: #ec671b;
   color: white;
   padding: 0rem 2rem;
+  margin: 1rem;
+  border-radius: 6px;
 
   ul {
     list-style-type: none;
@@ -126,9 +179,9 @@ a {
 }
 
 .sign-in-message-container {
-  display: flex;
-  justify-content: center;
-  height: 75vh;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  min-height: 100dvh;
 }
 
 .sign-in-message {
@@ -246,6 +299,12 @@ a {
 .auth-container {
   border: 1px solid #fff;
   padding: 0.5rem 1rem;
+}
+
+.form-container {
+  padding: 2rem;
+  background-color: rgb(244, 244, 244);
+  border-radius: 4px;
 }
 
 @media (max-width: 768px) {
