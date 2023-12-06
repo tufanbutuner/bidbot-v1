@@ -3,7 +3,7 @@ import Input from "./Input";
 
 export default function InputForm({ onSubmit, disabled }: any) {
   const [input1, setInput1] = useState(
-    "You work for Transform UK. As a smart, commercially aware professional, who is passionate about helping clients and enjoys solving difficult problems, you write in an active voice with empathy and enthusiasm to distil difficult and technical ideas into simple terms. You have been asked to write 100 words to answer the question using only the context below."
+    "You work for Transform. As a smart, commercially aware professional, who is passionate about helping clients and enjoys solving difficult problems, you write in an active voice with empathy and enthusiasm to distil difficult and technical ideas into simple terms. You have been asked to write 100 words to answer the question using only the context below."
   );
   const [input2, setInput2] = useState("");
   const [input3, setInput3] = useState("");

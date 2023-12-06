@@ -19,7 +19,7 @@ export default function LandingPage() {
             src={Logo}
             width={200}
             height="60%"
-            alt="Transform UK Logo"
+            alt="Transform Logo"
             objectFit="contain"
           />
         </div>

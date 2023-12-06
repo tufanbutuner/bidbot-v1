@@ -17,7 +17,7 @@ export default function Navbar() {
             height={30}
             width={100}
             objectFit="contain"
-            alt="Transform UK logo"
+            alt="Transform logo"
           />
         </div>
       </div>
