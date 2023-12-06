@@ -2,7 +2,6 @@ import { ClickAnalyticsPlugin } from "@microsoft/applicationinsights-clickanalyt
 import { ReactPlugin } from "@microsoft/applicationinsights-react-js";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { OpenAI } from "openai";
 
 var reactPlugin = new ReactPlugin();
 
@@ -10,8 +9,6 @@ var clickPluginInstance = new ClickAnalyticsPlugin();
 var clickPluginConfig = {
   autoCapture: true,
 };
-
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const OpenAiHeaders = {
   "Content-Type": "application/json",
@@ -25,7 +22,7 @@ export const pinecone = new Pinecone({
 
 const appInsights = new ApplicationInsights({
   config: {
-    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    connectionString: `${process.env.APPLICATIONINSIGHTS_CONNECTION_STRING}`,
     extensions: [reactPlugin, clickPluginInstance],
     enableAutoRouteTracking: true,
     extensionConfig: {
@@ -34,5 +31,5 @@ const appInsights = new ApplicationInsights({
   },
 });
 
-appInsights.loadAppInsights();
-appInsights.trackPageView();
+// appInsights.loadAppInsights();
+// appInsights.trackPageView();

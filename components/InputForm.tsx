@@ -43,7 +43,7 @@ export default function InputForm({ onSubmit, disabled }: any) {
   };
 
   return (
-    <div className="form-container">
+    <div className="p-6 bg-white border border-gray-200 rounded-lg shadow w-full">
       <form
         action="/api/embeddings"
         className="input-container"
@@ -106,7 +106,6 @@ export default function InputForm({ onSubmit, disabled }: any) {
 
           <button className="submit-button" type="submit" disabled={disabled}>
             <p>Submit</p>
-            {/* <IoSend size={20} /> */}
           </button>
         </div>
       </form>

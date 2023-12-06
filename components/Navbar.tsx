@@ -1,5 +1,6 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { HiOutlineLogout } from "react-icons/hi";
 import Logo from "../assets/transform-logo.png";
 
 export default function Navbar() {
@@ -8,12 +9,12 @@ export default function Navbar() {
   return (
     <div className="navbar-container">
       <div className="navbar-brand">
-        <h1>BidBot</h1>
         <div className="navbar-image">
+          <h1>BidBot</h1>
           <p>Powered by</p>
           <Image
             src={Logo}
-            height={40}
+            height={30}
             width={100}
             objectFit="contain"
             alt="Transform UK logo"
@@ -21,20 +22,15 @@ export default function Navbar() {
         </div>
       </div>
 
-      <ul>
-        {session ? (
-          <>
-            <li>{session.user?.name}</li>
-            <li className="auth-container" onClick={() => signOut()}>
-              Sign out
-            </li>
-          </>
-        ) : (
-          <li className="auth-container" onClick={() => signIn()}>
-            Sign in
-          </li>
-        )}
-      </ul>
+      {session && (
+        <div className="navbar-footer">
+          <p>{session.user?.name}</p>
+          <p className="auth-container" onClick={() => signOut()}>
+            Sign out
+            <HiOutlineLogout />
+          </p>
+        </div>
+      )}
     </div>
   );
 }
