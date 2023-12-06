@@ -2,7 +2,10 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import DocumentDisplay from "../components/DocumentDisplay";
+import Footer from "../components/Footer";
 import InputForm from "../components/InputForm";
+import LandingPage from "../components/LandingPage";
+import Navbar from "../components/Navbar";
 import useFormSubmit from "../hooks/useFormSubmit";
 
 interface DocumentMetadata {
@@ -61,23 +64,25 @@ export default function Home() {
 
   return (
     <>
-      <main className="container">
-        {!session ? (
-          <div className="sign-in-message-container">
-            <h1 className="sign-in-message">Please sign in to use BidBot</h1>
-          </div>
-        ) : (
-          <div className="main-container">
-            <InputForm onSubmit={onFormSubmit} disabled={disableButton} />
-            {error && <p className="error-message">{error}</p>}
-            <DocumentDisplay
-              documents={documents}
-              answer={answer}
-              loading={loading}
-            />
-          </div>
-        )}
-      </main>
+      {!session ? (
+        <LandingPage />
+      ) : (
+        <>
+          <Navbar />
+          <main className="container">
+            <div className="main-container">
+              <InputForm onSubmit={onFormSubmit} disabled={disableButton} />
+              {error && <p className="error-message">{error}</p>}
+              <DocumentDisplay
+                documents={documents}
+                answer={answer}
+                loading={loading}
+              />
+            </div>
+          </main>
+          <Footer />
+        </>
+      )}
     </>
   );
 }
