@@ -348,6 +348,24 @@ h1 {
       margin-bottom: 0rem;
     }
   }
+
+  .sign-in-message-container {
+    display: flex;
+
+    img {
+      display: none;
+    }
+  }
+
+  .sign-in-button {
+    width: 50%;
+  }
+  .tooltip .tooltiptext {
+    width: auto;
+    top: 130%;
+    left: 50%;
+    transform: translateX(-55%);
+  }
 }
 
 .answer-metadata-container {
